@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# check pycodestyle
+pycodestyle --exclude=".git,*venv*,*env*" .
