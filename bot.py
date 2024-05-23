@@ -5,6 +5,8 @@ This is the main file for the bot.
 import os
 from telegram import Update
 from dotenv import load_dotenv
+
+from plugins.helpers.filter_name import file_name_handler
 from plugins.helpers.logger import logger
 from telegram.ext import ApplicationBuilder
 from plugins.commands.file_detect import file_handler
@@ -34,6 +36,7 @@ def main() -> None:
 
     # Message Handlers
     app.add_handler(file_handler)
+    app.add_handler(file_name_handler)
 
     # Callback Query Handlers
     app.add_handler(rename_callback)

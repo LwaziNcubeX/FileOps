@@ -34,6 +34,12 @@ async def file_detector(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     elif update.message.photo:
         file = update.message.photo[-1]
         context.bot_data['photo'] = file
+        keyboard = [
+            [
+                InlineKeyboardButton("convert to pdf", callback_data="convert_to_pdf")
+            ]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
 
     file_size = convert_bytes(file.file_size)
     if update.message.photo:

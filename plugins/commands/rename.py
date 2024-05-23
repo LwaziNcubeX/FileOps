@@ -3,8 +3,13 @@
 rename file
 """
 import os
-from telegram import Update, Bot
+import shutil
+from asyncio import sleep
+
+from telegram import Update, Bot, ForceReply
 from telegram.ext import ContextTypes, CallbackQueryHandler
+
+from plugins.helpers.filter_name import filter_name
 
 
 async def rename_file(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -19,13 +24,22 @@ async def rename_file(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     await query.answer()
     await query.edit_message_text(f"Send a new file name\n")
 
+    new_file_name = await filter_name(update, context)
+
     bot = Bot(token=BOT_TOKEN)
     file_id = document.file_id
     new_file = await bot.get_file(file_id)
     await new_file.download_to_drive(document.file_name)
 
-    os.rename(new_file.file_path, 'test.jpg')
+    if new_file_name is None:
+        new_file_name = "new_file_name.jpg"
 
-    await bot.send_document(chat_id=query.message.chat.id, document=new_file.file_path)
+    print(new_file_name)
+    shutil.move(document.file_name, str(new_file_name))
+
+    await sleep(5)
+
+    await bot.send_document(chat_id=query.message.chat.id, document=str(new_file_name))
 
 rename_callback = CallbackQueryHandler(rename_file)
+
