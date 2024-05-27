@@ -13,6 +13,7 @@ from plugins.commands.file_detect import file_handler
 from plugins.commands.help import help_handler
 from plugins.commands.start import start_handler
 from plugins.commands.rename import rename_callback
+from plugins.commands.convert_to_pdf import to_pdf_callback
 
 
 try:
@@ -40,6 +41,7 @@ def main() -> None:
 
     # Callback Query Handlers
     app.add_handler(rename_callback)
+    app.add_handler(to_pdf_callback)
 
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 

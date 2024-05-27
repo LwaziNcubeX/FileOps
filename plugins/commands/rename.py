@@ -25,6 +25,9 @@ async def rename_file(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     await query.edit_message_text(f"Send a new file name\n")
 
     new_file_name = await filter_name(update, context)
+    shutil.move(document.file_name, str(new_file_name))
+
+
 
     bot = Bot(token=BOT_TOKEN)
     file_id = document.file_id
