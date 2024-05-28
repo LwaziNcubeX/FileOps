@@ -21,22 +21,17 @@ async def file_detector(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 
         keyboard = [
             [
-                InlineKeyboardButton("rename", callback_data="rename_file")
+                InlineKeyboardButton("Rename", callback_data="rename_file")
             ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-    elif update.message.video:
-        file = update.message.video
-        context.bot_data['video'] = file
-    elif update.message.audio:
-        file = update.message.audio
-        context.bot_data['audio'] = file
     elif update.message.photo:
         file = update.message.photo[-1]
         context.bot_data['photo'] = file
+
         keyboard = [
             [
-                InlineKeyboardButton("convert to pdf", callback_data="convert_to_pdf")
+                InlineKeyboardButton("Convert to PDF", callback_data="convert_to_pdf")
             ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -59,5 +54,4 @@ async def file_detector(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         )
 
 filter_type = (filters.Document.ALL & ~filters.COMMAND | filters.VIDEO | filters.AUDIO | filters.PHOTO)
-
 file_handler = MessageHandler(filter_type, file_detector)

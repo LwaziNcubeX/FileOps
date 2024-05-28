@@ -25,21 +25,21 @@ async def rename_file(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     await query.edit_message_text(f"Send a new file name\n")
 
     new_file_name = await filter_name(update, context)
+    
+    # Ensure the new file name is valid and not None
+    if new_file_name is None:
+        new_file_name = "new_file_name.jpg"
+
+    # Move the file to the new name
+    shutil.move(document.file_name, new_file_name)
 
     bot = Bot(token=BOT_TOKEN)
     file_id = document.file_id
     new_file = await bot.get_file(file_id)
-    await new_file.download_to_drive(document.file_name)
-
-    if new_file_name is None:
-        new_file_name = "new_file_name.jpg"
-
-    print(new_file_name)
-    shutil.move(document.file_name, str(new_file_name))
+    await new_file.download_to_drive(new_file_name)
 
     await sleep(5)
 
-    await bot.send_document(chat_id=query.message.chat.id, document=str(new_file_name))
+    await bot.send_document(chat_id=query.message.chat.id, document=new_file_name)
 
-rename_callback = CallbackQueryHandler(rename_file)
-
+rename_callback = CallbackQueryHandler(rename_file, pattern="^rename_file$")
