@@ -5,21 +5,22 @@ This is the main file for the bot.
 import os
 from telegram import Update
 from dotenv import load_dotenv
+from telegram.ext import ApplicationBuilder
+from telegram.request import HTTPXRequest
 
 from plugins.helpers.filter_name import file_name_handler
 from plugins.helpers.logger import logger
-from telegram.ext import ApplicationBuilder
 from plugins.commands.file_detect import file_handler
 from plugins.commands.help import help_handler
 from plugins.commands.start import start_handler
 from plugins.commands.rename import rename_callback
 from plugins.commands.convert_to_pdf import to_pdf_callback
 
-
+# Load environment variables
 try:
     load_dotenv()
 except FileNotFoundError:
-    logger.info("No .env file found. ignore if you are using a production bot")
+    logger.info("No .env file found. Ignore if you are using a production bot")
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
@@ -28,9 +29,16 @@ logger.info("Starting Bot...")
 
 def main() -> None:
     """
-    register handlers and runs the bot
+    Register handlers and run the bot
     """
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    # Create an HTTPXRequest object with increased timeout settings
+    request = HTTPXRequest(
+        connect_timeout=10.0,  # Increase connection timeout
+        read_timeout=20.0  # Increase read timeout
+    )
+
+    app = ApplicationBuilder().token(BOT_TOKEN).request(request).build()
+
     # Command Handlers
     app.add_handler(start_handler)
     app.add_handler(help_handler)
