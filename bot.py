@@ -3,18 +3,17 @@
 This is the main file for the bot.
 """
 import os
-from telegram import Update
+
 from dotenv import load_dotenv
+from telegram import Update
 from telegram.ext import ApplicationBuilder
 from telegram.request import HTTPXRequest
 
-from plugins.helpers.filter_name import file_name_handler
-from plugins.helpers.logger import logger
-from plugins.commands.file_detect import file_handler
+from plugins.commands.convert_to_pdf import pdf_conv_handler
 from plugins.commands.help import help_handler
+from plugins.commands.rename import conv_handler
 from plugins.commands.start import start_handler
-from plugins.commands.rename import rename_callback
-from plugins.commands.convert_to_pdf import to_pdf_callback
+from plugins.helpers.logger import logger
 
 # Load environment variables
 try:
@@ -44,12 +43,11 @@ def main() -> None:
     app.add_handler(help_handler)
 
     # Message Handlers
-    app.add_handler(file_handler)
-    app.add_handler(file_name_handler)
 
-    # Callback Query Handlers
-    app.add_handler(rename_callback)
-    app.add_handler(to_pdf_callback)
+
+    # conv Handlers
+    app.add_handler(conv_handler)
+    app.add_handler(pdf_conv_handler)
 
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 
