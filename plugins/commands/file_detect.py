@@ -2,8 +2,11 @@
 """
 detect file type
 """
+import re
+
+import requests
 from telegram import Update, constants, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ContextTypes
+from telegram.ext import ContextTypes, MessageHandler, filters
 
 from plugins.helpers.escape_markdown import escape_markdown
 from plugins.helpers.file_size import convert_bytes
@@ -62,3 +65,41 @@ async def detect_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     )
 
     return GET_PDF_NAME
+
+
+async def detect_url(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """
+    Detect URL in the message and download the file with progress updates.
+    """
+    check_url = bool(re.search(r'https?://\S+', update.message.text))
+
+    if check_url:
+        url = update.message.text.strip()
+
+        response = requests.get(url, stream=True)
+        total_size = int(response.headers.get('content-length', 0))
+        downloaded_size = 0
+        chunk_size = 1024
+        file_name = url.rsplit('/', 1)[-1]
+        file_path = 'downloads/' + file_name
+
+        message = await context.bot.send_message(update.message.chat_id, f"Processing...")
+
+        with open(file_path, 'wb') as file:
+            for data in response.iter_content(chunk_size=chunk_size):
+                file.write(data)
+                downloaded_size += len(data)
+
+                # Send progress update every 1 MB
+                if downloaded_size % (1024 * 1024) == 0 or downloaded_size == total_size:
+                    progress = (downloaded_size / total_size) * 100
+                    await context.bot.edit_message_text(f"Download progress: {progress:.2f}%",
+                                                        chat_id=update.message.chat_id,
+                                                        message_id=message.message_id)
+
+        await update.message.reply_text(f"Download complete. File saved to {file_path}")
+
+url_handler = MessageHandler(
+    filters.TEXT & ~filters.COMMAND,
+    detect_url
+)

@@ -10,6 +10,7 @@ from telegram.ext import ApplicationBuilder
 from telegram.request import HTTPXRequest
 
 from plugins.commands.convert_to_pdf import pdf_conv_handler
+from plugins.commands.file_detect import url_handler
 from plugins.commands.help import help_handler
 from plugins.commands.rename import conv_handler
 from plugins.commands.start import start_handler
@@ -43,7 +44,7 @@ def main() -> None:
     app.add_handler(help_handler)
 
     # Message Handlers
-
+    app.add_handler(url_handler)
 
     # conv Handlers
     app.add_handler(conv_handler)
