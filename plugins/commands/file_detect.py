@@ -37,7 +37,7 @@ async def detect_doc(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
     return FIRST
 
-GET_PDF_NAME, CONVERT_TO_PDF = range(2)
+GET_PDF_NAME, CONVERT_TO_PDF, CONVERT = range(3)
 
 
 async def detect_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -49,6 +49,7 @@ async def detect_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
 
     custom_keyboard = [
         [InlineKeyboardButton("✏️ Convert To PDF", callback_data='convert_to_pdf')],
+         [InlineKeyboardButton("Analyse image colors", callback_data='convert')],
         [InlineKeyboardButton("❌ Cancel", callback_data='cancel')],
     ]
 

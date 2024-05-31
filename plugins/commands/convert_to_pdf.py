@@ -7,8 +7,8 @@ from telegram import Update, Bot, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, CallbackQueryHandler, ConversationHandler, MessageHandler, filters
 from PIL import Image
 
-from plugins.commands.file_detect import CONVERT_TO_PDF, detect_photo, GET_PDF_NAME
-from plugins.commands.rename import cancel
+from plugins.commands.file_detect import CONVERT_TO_PDF, detect_photo, GET_PDF_NAME, CONVERT
+from plugins.commands.rename import cancel, convert
 
 last_message_ids = {}
 
@@ -80,6 +80,7 @@ pdf_conv_handler = ConversationHandler(
     entry_points=[MessageHandler(filters.PHOTO, detect_photo)],
     states={
         GET_PDF_NAME: [CallbackQueryHandler(req_pdf_name, pattern='^convert_to_pdf$')],
+        CONVERT :[CallbackQueryHandler(convert, pattern='^convert$')],
         CONVERT_TO_PDF: [MessageHandler(filters.TEXT & ~filters.COMMAND, convert_to_pdf)],
     },
     fallbacks=[CallbackQueryHandler(cancel, pattern='^cancel$')],

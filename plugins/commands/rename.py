@@ -77,6 +77,17 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
     return ConversationHandler.END
 
+async def convert(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Cancel and end the conversation
+    """
+    query = update.callback_query
+    await query.answer()
+    await query.edit_message_text(f"okay")
+    await query.edit_message_text('You can send a new task now!😇')
+
+    return ConversationHandler.END
+
 
 conv_handler = ConversationHandler(
         entry_points=[MessageHandler(filters.Document.ALL & ~filters.COMMAND, detect_doc)],
