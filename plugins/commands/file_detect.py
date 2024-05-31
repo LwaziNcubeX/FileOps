@@ -20,6 +20,7 @@ async def detect_doc(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
     custom_keyboard = [
         [InlineKeyboardButton("✏️ Rename", callback_data='Rename')],
+
         [InlineKeyboardButton("❌ Cancel", callback_data='cancel')],
     ]
 
@@ -49,7 +50,7 @@ async def detect_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
 
     custom_keyboard = [
         [InlineKeyboardButton("✏️ Convert To PDF", callback_data='convert_to_pdf')],
-         [InlineKeyboardButton("Analyse image colors", callback_data='convert')],
+         [InlineKeyboardButton("Analyse image colors", callback_data='analyze_colors')],
         [InlineKeyboardButton("❌ Cancel", callback_data='cancel')],
     ]
 
