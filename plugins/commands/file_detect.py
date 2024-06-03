@@ -68,22 +68,6 @@ async def detect_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
 
 REQUEST_URL_FILE_NAME, RENAME_AND_UPLOAD = range(2)
 
-
-async def detect_url(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    """
-    Detect URL in the message and download the file with progress updates.
-    """
-    check_url = bool(re.search(r'https?://\S+', update.message.text))
-
-    if check_url:
-        url = update.message.text.strip()
-        await update.message.reply_text(
-            f'Name: {url.rsplit("/", 1)[-1]}\n'
-            f'Size: {convert_bytes(0)}\n',
-            parse_mode=constants.ParseMode.MARKDOWN_V2
-        )
-
-    return REQUEST_URL_FILE_NAME
 """
 
         response = requests.get(url, stream=True)
