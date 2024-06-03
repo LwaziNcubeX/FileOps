@@ -6,11 +6,11 @@ import os
 import shutil
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ContextTypes, ConversationHandler, MessageHandler, filters, \
-    CallbackQueryHandler
+from telegram.ext import ContextTypes, ConversationHandler, MessageHandler, filters, CallbackQueryHandler
 
 from plugins.commands.file_detect import SECOND, FIRST, detect_doc
 from plugins.helpers.logger import logger
+
 
 
 async def req_file_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -77,9 +77,20 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
     return ConversationHandler.END
 
+async def convert(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Cancel and end the conversation
+    """
+    query = update.callback_query
+    await query.answer()
+    await query.edit_message_text(f"okay")
+    await query.edit_message_text('You can send a new task now!😇')
 
+    return ConversationHandler.END
+
+from plugins.commands.docx_pdf import docx_filter
 conv_handler = ConversationHandler(
-        entry_points=[MessageHandler(filters.Document.ALL & ~filters.COMMAND, detect_doc)],
+        entry_points=[MessageHandler(filters.Document.ALL & ~filters.COMMAND & ~docx_filter , detect_doc)],
         states={
             FIRST: [CallbackQueryHandler(req_file_name, pattern='^Rename$')],
             SECOND: [MessageHandler(filters.TEXT & ~filters.COMMAND, rename_file)],
