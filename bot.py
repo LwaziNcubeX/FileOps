@@ -15,7 +15,7 @@ from plugins.commands.rename import conv_handler
 from plugins.commands.docx_pdf import docx_to_pdf_handler 
 from plugins.commands.start import start_handler
 from plugins.commands.analyze_colors import analyze_callback
-from plugins.commands.url_upload import conv_handler2
+from plugins.commands.url_upload import url_conv_handler
 from plugins.helpers.logger import logger
 
 # Load environment variables
@@ -49,11 +49,10 @@ def main() -> None:
     app.add_handler(analyze_callback)
     # conv Handlers
     app.add_handler(conv_handler)
-    app.add_handler(conv_handler2)
+    app.add_handler(url_conv_handler)
     app.add_handler(pdf_conv_handler)
 
     app.add_handler(docx_to_pdf_handler)
-
 
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 
