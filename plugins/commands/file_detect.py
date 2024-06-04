@@ -48,14 +48,9 @@ async def detect_doc(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     )
 
     return FIRST
-
-GET_PDF_NAME, CONVERT_TO_PDF = range(2)
-
+GET_PDF_NAME, CONVERT_TO_PDF, ANALYZE_COLORS = range(3)
 
 async def detect_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    """
-    detect photo
-    """
     photo = update.message.photo[-1]
     context.bot_data['photo'] = photo
 
@@ -74,7 +69,7 @@ async def detect_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         reply_markup=InlineKeyboardMarkup(custom_keyboard)
     )
 
-    return GET_PDF_NAME
+    return GET_PDF_NAME  # Start conversation with GET_PDF_NAME state
 
 
 
@@ -93,7 +88,7 @@ async def detect_docx(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     context.bot_data['docx'] = docx
 
     custom_keyboard = [
-        [InlineKeyboardButton("✏️ docx", callback_data='convert_to_pdf')],
+        [InlineKeyboardButton("Convert docx To PDF", callback_data='convert_to_pdf')],
         [InlineKeyboardButton("❌ Cancel", callback_data='cancel')],
     ]
 

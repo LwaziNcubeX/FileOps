@@ -17,6 +17,10 @@ from plugins.commands.rename import cancel
 last_message_ids = {}
 
 class DocxFilter(MessageFilter):
+    """ class for the creation for a custom
+      filter method 
+    for docx files 
+    """
     def filter(self, message: Message) -> bool:
         if message.document:
             return message.document.mime_type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
