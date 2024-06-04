@@ -95,16 +95,18 @@ async def detect_docx(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
 
     return GET_PDF_NAME
 
+"""
 URL, ACTION, RENAME, DOWNLOAD = range(4)
 
 
 async def detect_url(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    """
+
     Detect URL in the message and download the file with progress updates.
-    """
+
     check_url = bool(re.search(r'https?://\S+', update.message.text))
 
     if not check_url:
         return ConversationHandler.END
 
     return URL
+"""

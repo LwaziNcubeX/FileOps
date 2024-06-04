@@ -54,7 +54,6 @@ def main() -> None:
 
     app.add_handler(docx_to_pdf_handler)
 
-
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 
