@@ -4,9 +4,12 @@ Upload files from a URL.
 """
 import os
 import requests
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, constants
 from telegram.ext import (CommandHandler, MessageHandler, filters, CallbackQueryHandler, ConversationHandler,
                           ContextTypes)
+
+from plugins.helpers.escape_markdown import escape_markdown
+from plugins.helpers.file_size import convert_bytes
 
 # Define states
 URL, ACTION, RENAME, DOWNLOAD = range(4)
@@ -25,21 +28,30 @@ async def receive_url(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     Receive the URL and prepare for the next step.
     """
     context.user_data['url'] = update.message.text
-    response = requests.head(context.user_data['url'], allow_redirects=True)
+    try:
+        response = requests.head(context.user_data['url'], allow_redirects=True)
+    except requests.exceptions.RequestException:
+        await update.message.reply_text('Invalid URL. Please try again.')
+        return URL
+
     filename = os.path.basename(context.user_data['url'])
-    filesize = response.headers.get('content-length', 'unknown size')
+    filesize = convert_bytes(int(response.headers.get('content-length', 0)))
 
     context.user_data['filename'] = filename
     context.user_data['filesize'] = filesize
 
     keyboard = [
-        [InlineKeyboardButton("✏️ Rename", callback_data='rename')],
-        [InlineKeyboardButton("🔗 Upload", callback_data='upload')],
+        [InlineKeyboardButton("✏️ Rename", callback_data='rename'),
+         InlineKeyboardButton("🔗 Upload", callback_data='upload')],
         [InlineKeyboardButton("❌ Cancel", callback_data='cancel')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text(f"File name: {filename}\nFile size: {filesize}\nWhat would you like to do?",
-                              reply_markup=reply_markup)
+    await update.message.reply_text(
+        f"What would you like to do?"
+        f"*Name*: {escape_markdown(filename)}\n"
+        f"*Size:* {escape_markdown(filesize)}\n\n",
+        parse_mode=constants.ParseMode.MARKDOWN_V2,
+        reply_markup=reply_markup)
     return ACTION
 
 
@@ -57,7 +69,8 @@ async def handle_action(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
         await query.edit_message_text('Uploading the file...')
         return await download_and_upload(update, context)
     else:
-        await query.edit_message_text('Process cancelled.')
+        await query.edit_message_text('Terminating Process.....')
+        await query.edit_message_text('You can start a new task now!😇')
         return ConversationHandler.END
 
 
@@ -79,7 +92,12 @@ async def download_and_upload(update: Update, context: ContextTypes.DEFAULT_TYPE
     url = context.user_data['url']
     filename = context.user_data.get('new_filename', context.user_data['filename'])
 
-    response = requests.get(url, stream=True)
+    try:
+        response = requests.get(url, stream=True)
+    except requests.exceptions.RequestException:
+        await update.message.reply_text('Failed to download the file. Please try again.')
+        return ACTION
+
     filepath = os.path.join('/tmp', filename)
 
     with open(filepath, 'wb') as file:
@@ -108,3 +126,4 @@ conv_handler2 = ConversationHandler(
         },
         fallbacks=[CommandHandler('cancel', cancel)],
     )
+
