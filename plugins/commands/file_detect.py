@@ -37,53 +37,31 @@ async def detect_doc(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 
     return FIRST
 
-GET_PDF_NAME, CONVERT_TO_PDF, ANALYZE_COLORS = range(3)
+
+# GET_DOCX_NAME, DOCX_TO_PDF = range(2)
 
 
-async def detect_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    photo = update.message.photo[-1]
-    context.bot_data['photo'] = photo
+# async def detect_docx(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+#     """
+#     detect docx
+#     """
+#     docx = update.message.document
+#     context.bot_data['docx'] = docx
 
-    custom_keyboard = [
-        [InlineKeyboardButton("✏️ Convert To PDF", callback_data='convert_to_pdf')],
-        [InlineKeyboardButton("Analyse image colors", callback_data='analyze_colors')],
-        [InlineKeyboardButton("❌ Cancel", callback_data='cancel')],
-    ]
+#     custom_keyboard = [
+#         [InlineKeyboardButton("Convert docx To PDF", callback_data='convert_to_pdf')],
+#         [InlineKeyboardButton("❌ Cancel", callback_data='cancel')],
+#     ]
 
-    file_size = convert_bytes(photo.file_size)
+#     file_size = convert_bytes(docx.file_size)
 
-    await update.message.reply_text(
-        f"*Name*: Photo\n"
-        f"*Size:* {escape_markdown(file_size)}\n",
-        parse_mode=constants.ParseMode.MARKDOWN_V2,
-        reply_markup=InlineKeyboardMarkup(custom_keyboard)
-    )
+#     await update.message.reply_text(
+#         f"*Name*: Docx\n"
+#         f"*Size:* {escape_markdown(file_size)}\n",
+#         parse_mode=constants.ParseMode.MARKDOWN_V2,
+#         reply_markup=InlineKeyboardMarkup(custom_keyboard)
+#     )
 
-    return GET_PDF_NAME  # Start conversation with GET_PDF_NAME state
-
-
-GET_DOCX_NAME, DOCX_TO_PDF = range(2)
-
-
-async def detect_docx(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    """
-    detect docx
-    """
-    docx = update.message.document
-    context.bot_data['docx'] = docx
-
-    custom_keyboard = [
-        [InlineKeyboardButton("Convert docx To PDF", callback_data='convert_to_pdf')],
-        [InlineKeyboardButton("❌ Cancel", callback_data='cancel')],
-    ]
-
-    file_size = convert_bytes(docx.file_size)
-
-    await update.message.reply_text(
-        f"*Name*: Docx\n"
-        f"*Size:* {escape_markdown(file_size)}\n",
-        parse_mode=constants.ParseMode.MARKDOWN_V2,
-        reply_markup=InlineKeyboardMarkup(custom_keyboard)
-    )
+#     return GET_PDF_NAME
 
     return GET_PDF_NAME

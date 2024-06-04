@@ -88,9 +88,9 @@ async def convert(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
     return ConversationHandler.END
 
-from plugins.commands.docx_pdf import docx_filter
+# from plugins.commands.docx_pdf import docx_filter
 conv_handler = ConversationHandler(
-        entry_points=[MessageHandler(filters.Document.ALL & ~filters.COMMAND & ~docx_filter , detect_doc)],
+        entry_points=[MessageHandler(filters.Document.ALL & ~filters.COMMAND , detect_doc)],
         states={
             FIRST: [CallbackQueryHandler(req_file_name, pattern='^Rename$')],
             SECOND: [MessageHandler(filters.TEXT & ~filters.COMMAND, rename_file)],

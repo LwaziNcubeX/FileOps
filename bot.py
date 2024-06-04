@@ -9,12 +9,11 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder
 from telegram.request import HTTPXRequest
 
-from plugins.commands.convert_to_pdf import pdf_conv_handler
 from plugins.commands.help import help_handler
+from plugins.commands.photo_manager import photo_conv_handler
 from plugins.commands.rename import conv_handler
-from plugins.commands.docx_pdf import docx_to_pdf_handler 
+# from plugins.commands.docx_pdf import docx_to_pdf_handler
 from plugins.commands.start import start_handler
-from plugins.commands.analyze_colors import analyze_callback
 from plugins.commands.url_upload import url_conv_handler
 from plugins.helpers.logger import logger
 
@@ -46,13 +45,12 @@ def main() -> None:
     app.add_handler(help_handler)
 
     # Message Handlers
-    app.add_handler(analyze_callback)
     # conv Handlers
     app.add_handler(conv_handler)
     app.add_handler(url_conv_handler)
-    app.add_handler(pdf_conv_handler)
+    app.add_handler(photo_conv_handler)
 
-    app.add_handler(docx_to_pdf_handler)
+    # app.add_handler(docx_to_pdf_handler)
 
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 
