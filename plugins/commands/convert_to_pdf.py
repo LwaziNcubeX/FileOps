@@ -7,9 +7,7 @@ from telegram import Update, Bot, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, CallbackQueryHandler, ConversationHandler, MessageHandler, filters 
 from PIL import Image
 
-from plugins.commands.analyze_colors import analyse_colors
-
-from plugins.commands.file_detect import CONVERT_TO_PDF, detect_photo, GET_PDF_NAME, ANALYZE_COLORS
+from plugins.commands.file_detect import CONVERT_TO_PDF, detect_photo, GET_PDF_NAME 
 
 from plugins.commands.rename import cancel
 
@@ -23,7 +21,6 @@ async def req_pdf_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     query = update.callback_query
     await query.answer()
     if query.data == 'analyze_colors':
-        print("yes@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         return ConversationHandler.END
 
     context.user_data['choice'] = update.callback_query.data
@@ -83,12 +80,10 @@ async def convert_to_pdf(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
 
 pdf_conv_handler = ConversationHandler(
-    entry_points=[MessageHandler(filters.PHOTO, detect_photo)],
+    entry_points=[MessageHandler(filters.PHOTO , detect_photo)],
     states={
-        GET_PDF_NAME: [
-            CallbackQueryHandler(req_pdf_name, pattern='^convert_to_pdf$'),
-            CallbackQueryHandler(analyse_colors, pattern='^analyze_colors$')
-        ],
+        GET_PDF_NAME: [CallbackQueryHandler(req_pdf_name, pattern='^convert_to_pdf$')],
+        
         CONVERT_TO_PDF: [MessageHandler(filters.TEXT & ~filters.COMMAND, convert_to_pdf)],
     },
     fallbacks=[CallbackQueryHandler(cancel, pattern='^cancel$')],
