@@ -72,7 +72,7 @@ async def download_and_upload(update: Update, context: ContextTypes.DEFAULT_TYPE
         for chunk in response.iter_content(chunk_size=8192):
             file.write(chunk)
 
-    await update.message.reply_document(document=open(filepath, 'rb'))
+    await context.bot.send_document(chat_id=update.effective_chat.id, document=open(filepath, 'rb'))
     os.remove(filepath)
 
     return ConversationHandler.END
