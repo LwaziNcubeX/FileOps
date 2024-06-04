@@ -8,6 +8,9 @@ from sklearn.cluster import KMeans
 import webcolors
 
 def closest_color(requested_color):
+    """
+    Given a color, find the closest named CSS3 color
+    """
     min_colors = {}
     for key, name in webcolors.CSS3_HEX_TO_NAMES.items():
         r_c, g_c, b_c = webcolors.hex_to_rgb(key)
@@ -18,6 +21,9 @@ def closest_color(requested_color):
     return min_colors[min(min_colors.keys())]
 
 def image_analyser(path, num_colors=8):
+    """
+    Analyze an image and return the color percentages
+    """
     img = cv2.imread(path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = img.reshape((-1, 3))
@@ -35,6 +41,9 @@ def image_analyser(path, num_colors=8):
     return color_percentages
 
 def generate_chart(data, file_path, background_color='white'):
+    """
+    Generate a pie chart of the color percentages
+    """
     sizes = list(data.values())
     colors = [np.array(color)/255 for color in data.keys()]
 
@@ -50,6 +59,9 @@ def generate_chart(data, file_path, background_color='white'):
     plt.close()
 
 async def analyse_colors(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    """
+    Analyze the photo and send a pie chart of the color percentages
+    """
     query = update.callback_query
     await query.answer()
     await query.edit_message_text("Image will be analyzed...")
