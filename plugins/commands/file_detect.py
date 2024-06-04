@@ -2,14 +2,10 @@
 """
 detect file types
 """
-import re
-
 from telegram import Update, constants, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ContextTypes, ConversationHandler
+from telegram.ext import ContextTypes
 from plugins.helpers.escape_markdown import escape_markdown
 from plugins.helpers.file_size import convert_bytes
-from telegram import Update
-
 
 FIRST, SECOND = range(2)
 
@@ -40,7 +36,9 @@ async def detect_doc(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     )
 
     return FIRST
+
 GET_PDF_NAME, CONVERT_TO_PDF, ANALYZE_COLORS = range(3)
+
 
 async def detect_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     photo = update.message.photo[-1]
@@ -64,13 +62,8 @@ async def detect_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
     return GET_PDF_NAME  # Start conversation with GET_PDF_NAME state
 
 
-
-
-
-
-
-
 GET_DOCX_NAME, DOCX_TO_PDF = range(2)
+
 
 async def detect_docx(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """
@@ -94,19 +87,3 @@ async def detect_docx(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     )
 
     return GET_PDF_NAME
-
-"""
-URL, ACTION, RENAME, DOWNLOAD = range(4)
-
-
-async def detect_url(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-
-    Detect URL in the message and download the file with progress updates.
-
-    check_url = bool(re.search(r'https?://\S+', update.message.text))
-
-    if not check_url:
-        return ConversationHandler.END
-
-    return URL
-"""
