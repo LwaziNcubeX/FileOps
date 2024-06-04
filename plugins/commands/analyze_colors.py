@@ -40,6 +40,7 @@ def image_analyser(path, num_colors=8):
 
     return color_percentages
 
+
 def generate_chart(data, file_path, background_color='white'):
     """
     Generate a pie chart of the color percentages
@@ -58,7 +59,8 @@ def generate_chart(data, file_path, background_color='white'):
     plt.savefig(file_path, facecolor=background_color)
     plt.close()
 
-async def analyse_colors(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+
+async def analyze_colors(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """
     Analyze the photo and send a pie chart of the color percentages
     """
@@ -103,7 +105,4 @@ async def analyse_colors(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     context.bot_data.pop('photo', None)
 
     return ConversationHandler.END  # End conversation after analysis
-
-
-analyze_callback = CallbackQueryHandler(analyse_colors, pattern="^analyze_colors$")
 

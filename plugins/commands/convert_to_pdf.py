@@ -7,38 +7,6 @@ from telegram import Update, Bot, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ContextTypes, CallbackQueryHandler, ConversationHandler, MessageHandler, filters 
 from PIL import Image
 
-from plugins.commands.analyze_colors import analyse_colors
-
-from plugins.commands.file_detect import CONVERT_TO_PDF, detect_photo, GET_PDF_NAME, ANALYZE_COLORS
-
-from plugins.commands.rename import cancel
-
-last_message_ids = {}
-
-
-async def req_pdf_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    """
-    request pdf name
-    """
-    query = update.callback_query
-    await query.answer()
-    if query.data == 'analyze_colors':
-        print("yes@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-        return ConversationHandler.END
-
-    context.user_data['choice'] = update.callback_query.data
-    custom_keyboard = [
-        [InlineKeyboardButton("Cancel", callback_data='cancel')],
-    ]
-    message = await query.edit_message_text(
-        f'Send me a new PDF name',
-        reply_markup=InlineKeyboardMarkup(custom_keyboard)
-    )
-
-    last_message_ids[query.message.chat.id] = message.message_id
-
-    return CONVERT_TO_PDF
-
 
 async def convert_to_pdf(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """
@@ -49,7 +17,6 @@ async def convert_to_pdf(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     image = context.bot_data.get('photo')
 
     message = await update.message.reply_text("Downloading file... please wait\n")
-    await context.bot.delete_message(chat_id=update.message.chat_id, message_id=last_message_ids[update.message.chat.id])
 
     file_id = image.file_id
     new_file = await context.bot.get_file(file_id)
@@ -80,16 +47,3 @@ async def convert_to_pdf(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     os.remove(pdf_file_path)
 
     return ConversationHandler.END
-
-
-pdf_conv_handler = ConversationHandler(
-    entry_points=[MessageHandler(filters.PHOTO, detect_photo)],
-    states={
-        GET_PDF_NAME: [
-            CallbackQueryHandler(req_pdf_name, pattern='^convert_to_pdf$'),
-            CallbackQueryHandler(analyse_colors, pattern='^analyze_colors$')
-        ],
-        CONVERT_TO_PDF: [MessageHandler(filters.TEXT & ~filters.COMMAND, convert_to_pdf)],
-    },
-    fallbacks=[CallbackQueryHandler(cancel, pattern='^cancel$')],
-)
