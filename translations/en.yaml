@@ -1,0 +1,4 @@
+start_message: "<b>Hello {name}, 👋\n\nI'm FileOps Bot & I can help you with the following:</b>\n
+<i>- Quickly download files from any URL with ease.\n- Rename your files in Telegram.\n- Analyze images for detailed insights.
+- and more
+</i>\n\n<b>Press /help button to get started!</b>"
