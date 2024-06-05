@@ -34,3 +34,7 @@ threadpoolctl==3.5.0
 tqdm==4.66.4
 typing_extensions==4.12.1
 webcolors==1.13
+
+requests~=2.32.3
+appwrite~=5.0.3
+PyYAML~=6.0.1
